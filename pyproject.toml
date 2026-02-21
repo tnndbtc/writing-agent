@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "writing-agent"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["click>=8.1"]
+
+[project.scripts]
+writing-agent = "writing_agent.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/writing_agent"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,48 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ── Build / packaging ─────────────────────────────────────────────────────────
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+# ── Hatch (build backend) ─────────────────────────────────────────────────────
+.hatch/
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Test & coverage ───────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# ── Type checkers ─────────────────────────────────────────────────────────────
+.mypy_cache/
+.pytype/
+.ruff_cache/
+
+# ── IDEs / editors ────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── OS artefacts ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Generated script output (smoke-test artefacts, not source) ────────────────
+Script.json
+Script*.json
