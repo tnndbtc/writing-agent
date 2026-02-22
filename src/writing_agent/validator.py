@@ -7,11 +7,13 @@ from pathlib import Path
 
 import jsonschema
 
-# Path to Script.v1.json relative to this file:
+# Paths to contract schemas relative to this file:
 # src/writing_agent/ -> src/ -> repo root -> third_party/contracts/schemas/
-_SCRIPT_SCHEMA_PATH = (
-    Path(__file__).resolve().parents[2] / "third_party/contracts/schemas/Script.v1.json"
+_CONTRACTS_SCHEMAS = (
+    Path(__file__).resolve().parents[2] / "third_party/contracts/schemas"
 )
+_STORY_PROMPT_SCHEMA_PATH = _CONTRACTS_SCHEMAS / "StoryPrompt.v1.json"
+_SCRIPT_SCHEMA_PATH = _CONTRACTS_SCHEMAS / "Script.v1.json"
 
 
 class ValidationError(Exception):
@@ -20,6 +22,9 @@ class ValidationError(Exception):
 
 def validate_prompt(path: str) -> dict:
     """Read and validate a StoryPrompt JSON file.
+
+    Schema-level validation (StoryPrompt.v1.json) runs first.
+    Semantic rules below catch constraints that JSON Schema cannot express.
 
     Returns the parsed prompt dict on success.
     Raises ValidationError on any problem.
@@ -35,9 +40,14 @@ def validate_prompt(path: str) -> dict:
     except json.JSONDecodeError as exc:
         raise ValidationError(f"Invalid JSON: {exc}") from exc
 
-    # 2. Root is a dict
-    if not isinstance(data, dict):
-        raise ValidationError("Root must be a JSON object")
+    # 2. Schema validation against StoryPrompt.v1.json contract
+    schema = json.loads(_STORY_PROMPT_SCHEMA_PATH.read_text(encoding="utf-8"))
+    try:
+        jsonschema.validate(data, schema)
+    except jsonschema.ValidationError as exc:
+        raise ValidationError(f"StoryPrompt violates contract schema: {exc.message}") from exc
+
+    # ── Semantic rules (constraints JSON Schema cannot express) ───────────────
 
     # 3. schema_id == "StoryPrompt"
     if data.get("schema_id") != "StoryPrompt":

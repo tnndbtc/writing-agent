@@ -28,6 +28,7 @@ SCHEMA_MAP: dict[str, str] = {
     "RenderOutput": "RenderOutput.v1.json",
     "RenderPackage": "RenderPackage.v1.json",
     "EpisodeBundle": "EpisodeBundle.v1.json",
+    "StoryPrompt": "StoryPrompt.v1.json",
 }
 
 _RE_DATETIME = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
