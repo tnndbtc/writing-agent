@@ -46,3 +46,5 @@ Thumbs.db
 # ── Generated script output (smoke-test artefacts, not source) ────────────────
 Script.json
 Script*.json
+# Un-ignore everything vendored from orchestrator (not generated output)
+!third_party/contracts/**
