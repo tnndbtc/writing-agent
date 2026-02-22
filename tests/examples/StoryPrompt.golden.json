@@ -1,0 +1,22 @@
+{
+  "schema_id": "StoryPrompt",
+  "schema_version": "1.0",
+  "prompt_id": "prompt_0001",
+  "episode_goal": "Two characters meet briefly...",
+  "generation_seed": 1,
+  "series": {
+    "title": "Example Series",
+    "genre": "Drama",
+    "tone": "Contemplative"
+  },
+  "setting": {
+    "primary_location": "Empty bus stop at night"
+  },
+  "characters": [
+    {"id": "alex", "role": "protagonist"},
+    {"id": "rin", "role": "deuteragonist"}
+  ],
+  "constraints": {
+    "max_scenes": 1
+  }
+}
