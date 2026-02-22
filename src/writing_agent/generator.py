@@ -39,6 +39,7 @@ def generate_script(prompt: dict) -> dict:
     return {
         "genre":          series["genre"],
         "project_id":     series["title"],
+        "schema_id":      "Script",
         "schema_version": "1.0.0",
         "scenes":         [scene],
         "script_id":      prompt_id,

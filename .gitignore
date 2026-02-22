@@ -48,3 +48,6 @@ Script.json
 Script*.json
 # Un-ignore everything vendored from orchestrator (not generated output)
 !third_party/contracts/**
+# Re-ignore Python bytecode that may appear inside the vendored tree
+third_party/contracts/**/__pycache__/
+third_party/contracts/**/*.py[cod]

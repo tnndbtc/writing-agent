@@ -21,8 +21,8 @@ _SCRIPT_SCHEMA_PATH = (
 # Test 1 — Required keys present (and no extraneous keys)
 # ---------------------------------------------------------------------------
 
-REQUIRED_TOP_LEVEL = {"genre", "project_id", "schema_version", "scenes", "script_id", "title"}
-EXTRANEOUS_TOP_LEVEL = {"schema_id", "source_prompt_id", "generation_seed", "characters", "beats"}
+REQUIRED_TOP_LEVEL = {"schema_id", "genre", "project_id", "schema_version", "scenes", "script_id", "title"}
+EXTRANEOUS_TOP_LEVEL = {"source_prompt_id", "generation_seed", "characters", "beats"}
 REQUIRED_SCENE = {"scene_id", "location", "time_of_day", "actions"}
 EXTRANEOUS_SCENE = {"beats"}
 
@@ -169,6 +169,7 @@ def test_golden_output(prompt_file, tmp_path):
     data = json.loads(out.read_text(encoding="utf-8"))
 
     # Top-level fields
+    assert data["schema_id"] == "Script"
     assert data["genre"] == "Drama"
     assert data["project_id"] == "Example Series"
     assert data["schema_version"] == "1.0.0"

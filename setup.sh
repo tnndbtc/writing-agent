@@ -19,6 +19,9 @@ while true; do
   case "$choice" in
     1)
       echo ""
+      echo "Running contract verification..."
+      "$VENV/bin/python" third_party/contracts/tools/verify_contracts.py
+      echo ""
       echo "Running tests..."
       "$PYTEST" -v
       ;;
