@@ -7,7 +7,7 @@ import sys
 import click
 
 from writing_agent.generator import generate_script
-from writing_agent.validator import ValidationError, validate_prompt
+from writing_agent.validator import ValidationError, validate_prompt, validate_script_output
 from writing_agent.writer import write_json
 
 
@@ -40,5 +40,12 @@ def generate(prompt_path: str, out_path: str) -> None:
         sys.exit(1)
 
     script = generate_script(prompt)
+
+    try:
+        validate_script_output(script)
+    except ValidationError:
+        click.echo("ERROR: generated script violates contract", err=True)
+        sys.exit(1)
+
     write_json(script, out_path)
     sys.exit(0)

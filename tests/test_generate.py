@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
+import jsonschema
+import pytest
 from click.testing import CliRunner
 
 from writing_agent.cli import main
+
+# Path to Script.v1.json: tests/ -> repo root -> third_party/contracts/schemas/
+_SCRIPT_SCHEMA_PATH = (
+    Path(__file__).resolve().parents[1] / "third_party/contracts/schemas/Script.v1.json"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -225,3 +233,24 @@ def test_invalid_prompt_max_scenes_zero(minimal_prompt, prompt_file, tmp_path):
     data = {**minimal_prompt, "constraints": {"max_scenes": 0}}
     p = prompt_file(data)
     _assert_invalid(runner, ["generate", "--prompt", str(p), "--out", str(tmp_path / "out.json")])
+
+
+# ---------------------------------------------------------------------------
+# Test 11 — Output conforms to Script.v1.json contract schema
+# ---------------------------------------------------------------------------
+
+
+def test_output_conforms_to_schema(minimal_prompt, prompt_file, tmp_path):
+    """Generated Script.json must conform to third_party/contracts/schemas/Script.v1.json."""
+    runner = CliRunner()
+    out = tmp_path / "script.json"
+    result = runner.invoke(
+        main, ["generate", "--prompt", str(prompt_file(minimal_prompt)), "--out", str(out)]
+    )
+    assert result.exit_code == 0, f"Generate failed: {result.output}"
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    schema = json.loads(_SCRIPT_SCHEMA_PATH.read_text(encoding="utf-8"))
+
+    # Raises jsonschema.ValidationError if the output does not conform
+    jsonschema.validate(data, schema)

@@ -1,13 +1,21 @@
-"""Input validation for StoryPrompt JSON files."""
+"""Input validation for StoryPrompt JSON files and output validation against contracts."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
+import jsonschema
+
+# Path to Script.v1.json relative to this file:
+# src/writing_agent/ -> src/ -> repo root -> third_party/contracts/schemas/
+_SCRIPT_SCHEMA_PATH = (
+    Path(__file__).resolve().parents[2] / "third_party/contracts/schemas/Script.v1.json"
+)
+
 
 class ValidationError(Exception):
-    """Raised when a StoryPrompt fails validation."""
+    """Raised when a StoryPrompt fails validation or a Script violates the contract."""
 
 
 def validate_prompt(path: str) -> dict:
@@ -85,3 +93,15 @@ def validate_prompt(path: str) -> dict:
         raise ValidationError("'constraints.max_scenes' must be a positive integer")
 
     return data
+
+
+def validate_script_output(script: dict) -> None:
+    """Validate a generated Script dict against the Script.v1.json contract schema.
+
+    Raises ValidationError if the script violates the schema.
+    """
+    schema = json.loads(_SCRIPT_SCHEMA_PATH.read_text(encoding="utf-8"))
+    try:
+        jsonschema.validate(script, schema)
+    except jsonschema.ValidationError as exc:
+        raise ValidationError(f"Script output violates contract: {exc.message}") from exc
