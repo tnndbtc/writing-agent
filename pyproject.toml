@@ -6,7 +6,10 @@ build-backend = "hatchling.build"
 name = "writing-agent"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["click>=8.1"]
+dependencies = [
+    "click>=8.1",
+    "jsonschema>=4.0",
+]
 
 [project.scripts]
 writing-agent = "writing_agent.cli:main"
