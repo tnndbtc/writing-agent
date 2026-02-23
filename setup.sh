@@ -22,8 +22,19 @@ while true; do
       echo "Running contract verification..."
       "$VENV/bin/python" third_party/contracts/tools/verify_contracts.py
       echo ""
-      echo "Running tests..."
-      "$PYTEST" -v
+      echo "Running unit tests (in-process)..."
+      "$PYTEST" tests/test_generate.py -v
+      echo ""
+      echo "Running writing-agent generate end-to-end..."
+      _ts="$(date '+%Y%m%d_%H%M%S')"
+      _out="/tmp/Script_${_ts}.json"
+      echo "  \$ writing-agent generate --prompt tests/examples/StoryPrompt.minimal.json --out ${_out}"
+      "$VENV/bin/writing-agent" generate \
+        --prompt tests/examples/StoryPrompt.minimal.json \
+        --out "${_out}"
+      echo "  Output: $(ls -lh "${_out}")"
+      rm "${_out}"
+      echo "  Removed: ${_out}"
       ;;
     2)
       echo ""
