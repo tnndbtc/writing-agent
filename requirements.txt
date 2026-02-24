@@ -1,0 +1,12 @@
+# Runtime dependencies (from pyproject.toml)
+click>=8.1
+jsonschema>=4.0
+
+# Build backend (required for editable install)
+hatchling
+
+# Test runner
+pytest
+
+# Install the package itself in editable mode
+-e .

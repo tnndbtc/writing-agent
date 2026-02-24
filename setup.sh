@@ -9,8 +9,9 @@ while true; do
   echo ""
   echo "writing-agent — setup menu"
   echo "---------------------------"
-  echo "1) Run tests"
-  echo "2) Show usage"
+  echo "1) Install requirements"
+  echo "2) Run tests"
+  echo "3) Show usage"
   echo "0) Exit"
   echo ""
   read -rp "Choose an option [1]: " choice
@@ -18,6 +19,13 @@ while true; do
 
   case "$choice" in
     1)
+      echo ""
+      echo "Installing requirements into $VENV ..."
+      "$VENV/bin/pip" install -r requirements.txt
+      echo ""
+      echo "Done. All dependencies and the package are installed."
+      ;;
+    2)
       echo ""
       echo "Running contract verification..."
       "$VENV/bin/python" third_party/contracts/tools/verify_contracts.py
@@ -36,7 +44,7 @@ while true; do
       rm "${_out}"
       echo "  Removed: ${_out}"
       ;;
-    2)
+    3)
       echo ""
       echo "Usage:"
       echo "  writing-agent generate --prompt StoryPrompt.json --out Script.json"
