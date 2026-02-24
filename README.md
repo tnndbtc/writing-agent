@@ -22,7 +22,68 @@ output, byte-for-byte.
 
 ## CLI
 
-The package installs a single command: `writing-agent`.
+The package installs a single command: `writing-agent` with two sub-commands.
+
+### Full workflow
+
+```
+story.txt  →  writing-agent compile  →  StoryPrompt.json
+                                              ↓
+                                    writing-agent generate  →  Script.json
+```
+
+---
+
+### `writing-agent compile`
+
+Parse a human-authored story text file into a validated `StoryPrompt.json`.
+By default the compiled prompt is validated against canon via `world-engine`
+before being written to disk.
+
+```
+writing-agent compile --story <story.txt> --out <StoryPrompt.json>
+```
+
+| Flag | Required | Default | Description |
+|------|----------|---------|-------------|
+| `--story` | ✅ | — | Path to story text file |
+| `--out` | ✅ | — | Path where `StoryPrompt.json` will be written |
+| `--world-engine-cmd` | | `world-engine` | Binary to invoke for canon validation |
+| `--skip-canon` | | off | Skip canon validation (dev / standalone mode) |
+
+**Example:**
+
+```bash
+writing-agent compile \
+  --story tests/examples/StoryPrompt.minimal.story \
+  --out /tmp/StoryPrompt.json
+```
+
+**Story file format** (`story.txt`):
+
+```
+# Lines starting with # and blank lines are ignored.
+prompt_id:        ep001
+episode_goal:     Find the hidden treasure
+generation_seed:  42
+series_title:     Western Tales
+series_genre:     Western
+series_tone:      Adventurous
+primary_location: Old West Town
+max_scenes:       3
+character:        sheriff protagonist
+character:        bandit antagonist
+```
+
+**Exit codes:**
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success — `StoryPrompt.json` written |
+| `1` | Parse error, contract violation, or canon violation |
+| `2` | `world-engine` binary not found (install it or use `--skip-canon`) |
+
+---
 
 ### `writing-agent generate`
 
@@ -113,14 +174,17 @@ Requires Python ≥ 3.12 and an existing virtualenv at
 ```
 writing-agent/
 ├── src/writing_agent/
-│   ├── cli.py          # Click entry point (writing-agent generate)
+│   ├── cli.py          # Click entry point (compile + generate commands)
+│   ├── compiler.py     # Story text parser + world-engine gate
 │   ├── generator.py    # Deterministic scene assembly
 │   ├── validator.py    # StoryPrompt + Script contract validation
 │   └── writer.py       # Byte-stable JSON output
 ├── tests/
 │   ├── conftest.py
+│   ├── test_compile.py
 │   ├── test_generate.py
-│   └── examples/       # Sample StoryPrompt files
+│   ├── stubs/          # world-engine stub scripts for testing
+│   └── examples/       # Sample story + StoryPrompt files
 ├── third_party/contracts/
 │   └── schemas/        # StoryPrompt.v1.json, Script.v1.json
 ├── requirements.txt
